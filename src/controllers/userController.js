@@ -1,126 +1,74 @@
-import User from "../models/userModel.js";
+import * as userService from "../services/userService.js";
+import sendResponse from "../utils/sendResponse.js";
 
-// Crear un nuevo usuario
 export const createUser = async (req, res) => {
   try {
-    const { name, email, phoneNumber } = req.body;
-
-    // Verificar si el usuario ya existe
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "El usuario con este correo ya existe" });
-    }
-
-    // Crear el nuevo usuario
-    const newUser = new User({ name, email, phoneNumber });
-
-    // Guardar el usuario en la base de datos
-    await newUser.save();
-
-    // Responder con el usuario creado
-    res.status(201).json(newUser);
+    const newUser = await userService.createUser(req.body);
+    sendResponse(res, 201, newUser, "Usuario creado exitosamente");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendResponse(res, 500, null, error.message);
   }
 };
 
-// Obtener todos los usuarios
-export const getUsers = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Obtener un usuario por ID
 export const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-    res.status(200).json(user);
+    const user = await userService.getUserById(req.params.id);
+    sendResponse(res, 200, user, "Usuario encontrado");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendResponse(res, 404, null, error.message);
   }
 };
 
-// Actualizar un usuario
+export const getUsers = async (req, res) => {
+  try {
+    const users = await userService.getUsers();
+    sendResponse(res, 200, users, "Usuarios encontrados");
+  } catch (error) {
+    sendResponse(res, 500, null, error.message);
+  }
+};
+
 export const updateUser = async (req, res) => {
   try {
-    const { name, email, phoneNumber } = req.body;
-    const user = await User.findById(req.params.id);
-
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-
-    user.name = name || user.name;
-    user.email = email || user.email;
-    user.phoneNumber = phoneNumber || user.phoneNumber;
-
-    await user.save();
-    res.status(200).json(user);
+    const updatedUser = await userService.updateUser(req.params.id, req.body);
+    sendResponse(res, 200, updatedUser, "Usuario actualizado exitosamente");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendResponse(res, 500, null, error.message);
   }
 };
 
-// Eliminar un usuario
 export const deleteUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-
-    await User.deleteOne({ _id: req.params.id });
-    res.status(200).json({ message: "Usuario eliminado correctamente" });
+    await userService.deleteUser(req.params.id);
+    sendResponse(res, 200, null, "Usuario eliminado correctamente");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendResponse(res, 500, null, error.message);
   }
 };
 
 export const getUserByPhoneNumber = async (req, res) => {
   try {
-    const user = await User.findOne({ phoneNumber: req.params.phoneNumber });
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-    res.status(200).json(user);
+    const user = await userService.getUserByPhoneNumber(req.params.phoneNumber);
+    sendResponse(res, 200, user, "Usuario encontrado");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendResponse(res, 404, null, error.message);
   }
 };
 
-// Registro de un servicio
 export const registerService = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-    await user.incrementServices();
-    res.status(200).json(user);
+    await userService.registerService(req.params.id);
+    sendResponse(res, 200, null, "Servicio registrado correctamente");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendResponse(res, 500, null, error.message);
   }
 };
 
-// Registro de un referido
 export const registerReferral = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-    await user.incrementReferrals();
-    res.status(200).json(user);
+    await userService.registerReferral(req.params.id);
+    sendResponse(res, 200, null, "Referido registrado correctamente");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendResponse(res, 500, null, error.message);
   }
 };

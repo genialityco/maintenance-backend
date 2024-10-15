@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: false,
-    unique: true,
+    // unique: true,
   },
   phoneNumber: {
     type: String,
@@ -47,9 +47,10 @@ userSchema.methods.incrementServices = function() {
   this.servicesTaken += 1;
 
   // Otorgar un descuento por cada 7 servicios tomados
-  if (this.servicesTaken % 7 === 0) {
+  if (this.servicesTaken > 7) {
     this.hasServiceDiscount = true;
     this.serviceDiscountDetails = 'Descuento especial por 7 servicios tomados';
+    this.servicesTaken = 1; // Reiniciar el conteo de servicios tomados a 1
   } else {
     this.hasServiceDiscount = false;
     this.serviceDiscountDetails = '';
@@ -64,18 +65,20 @@ userSchema.methods.incrementReferrals = function() {
   this.servicesTaken += 1; // Cada referido cuenta también como un servicio
 
   // Otorgar un beneficio por cada 5 referidos realizados
-  if (this.referralsMade % 5 === 0) {
+  if (this.referralsMade > 5) {
     this.hasReferralBenefit = true;
     this.referralBenefitDetails = 'Beneficio especial por 5 referidos realizados';
+    this.referralsMade = 1; // Reiniciar el conteo de referidos realizados a 1
   } else {
     this.hasReferralBenefit = false;
     this.referralBenefitDetails = '';
   }
 
   // También revisar si los servicios tomados alcanzan un múltiplo de 7
-  if (this.servicesTaken % 7 === 0) {
+  if (this.servicesTaken > 7) {
     this.hasServiceDiscount = true;
     this.serviceDiscountDetails = 'Descuento especial por 7 servicios tomados';
+    this.servicesTaken = 1; // Reiniciar el conteo de servicios tomados a 1
   } else {
     this.hasServiceDiscount = false;
     this.serviceDiscountDetails = '';
