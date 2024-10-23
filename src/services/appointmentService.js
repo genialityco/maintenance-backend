@@ -2,10 +2,12 @@ import appointmentModel from "../models/appointmentModel.js";
 
 // Crear una nueva cita
 export const createAppointment = async (appointmentData) => {
-  const { service, startDate, endDate } = appointmentData;
+  const { service, employee, user, startDate, endDate } = appointmentData;
 
   const newAppointment = new appointmentModel({
     service,
+    employee,
+    user,
     startDate,
     endDate,
   });
@@ -15,7 +17,12 @@ export const createAppointment = async (appointmentData) => {
 
 // Obtener todas las citas
 export const getAppointments = async () => {
-  return await appointmentModel.find();
+  return await appointmentModel
+    .find()
+    .populate("service")
+    .populate("employee")
+    .populate("user")
+    .exec();
 };
 
 // Obtener una cita por ID
