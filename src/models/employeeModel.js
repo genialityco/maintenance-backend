@@ -9,6 +9,13 @@ const employeeModelSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  services: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Service",
+      required: false,
+    },
+  ],
   email: {
     type: String,
     required: true,

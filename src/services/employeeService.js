@@ -2,16 +2,25 @@ import Employee from "../models/employeeModel.js";
 
 // Crear un nuevo empleado
 export const createEmployee = async (employeeData) => {
-  const { names, position, email, phoneNumber, username, password } = employeeData;
+  const { names, position, email, phoneNumber, services, username, password } =
+    employeeData;
 
   // Crear y guardar el nuevo empleado
-  const newEmployee = new Employee({ names, position, email, phoneNumber, username, password });
+  const newEmployee = new Employee({
+    names,
+    position,
+    email,
+    phoneNumber,
+    services,
+    username,
+    password,
+  });
   return await newEmployee.save();
 };
 
 // Obtener todos los empleados
 export const getEmployees = async () => {
-  return await Employee.find();
+  return await Employee.find().populate('services').exec();
 };
 
 // Obtener un empleado por ID
@@ -34,7 +43,8 @@ export const getEmployeeByPhoneNumber = async (phoneNumber) => {
 
 // Actualizar un empleado
 export const updateEmployee = async (id, employeeData) => {
-  const { names, position, email, phoneNumber, username, password } = employeeData;
+  const { names, position, email, phoneNumber, services, username, password } =
+    employeeData;
   const employee = await Employee.findById(id);
 
   if (!employee) {
@@ -45,6 +55,7 @@ export const updateEmployee = async (id, employeeData) => {
   employee.position = position || employee.position;
   employee.email = email || employee.email;
   employee.phoneNumber = phoneNumber || employee.phoneNumber;
+  employee.services = services || employee.services;
   employee.username = username || employee.username;
   employee.password = password || employee.password;
 
