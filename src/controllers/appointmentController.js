@@ -33,6 +33,17 @@ export const getAppointmentById = async (req, res) => {
   }
 };
 
+export const getAppointmentsByEmployee = async (req, res) => {
+  try {
+    const appointments = await appointmentService.getAppointmentsByEmployee(
+      req.params.employeeId
+    );
+    sendResponse(res, 200, appointments, "Citas obtenidas exitosamente");
+  } catch (error) {
+    sendResponse(res, 404, null, error.message);
+  }
+};
+
 // Actualizar una cita
 export const updateAppointment = async (req, res) => {
   try {

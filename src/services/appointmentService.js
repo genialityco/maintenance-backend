@@ -4,6 +4,20 @@ import appointmentModel from "../models/appointmentModel.js";
 export const createAppointment = async (appointmentData) => {
   const { service, employee, user, startDate, endDate } = appointmentData;
 
+  // Comprobar citas superpuestas
+  const overlappingAppointments = await appointmentModel.find({
+    employee,
+    $or: [
+      { startDate: { $lt: endDate, $gte: startDate } },
+      { endDate: { $gt: startDate, $lte: endDate } },
+      { startDate: { $lte: startDate }, endDate: { $gte: endDate } },
+    ],
+  });
+
+  if (overlappingAppointments.length > 0) {
+    throw new Error("El empleado tiene citas que se cruzan");
+  }
+
   const newAppointment = new appointmentModel({
     service,
     employee,
@@ -14,7 +28,6 @@ export const createAppointment = async (appointmentData) => {
 
   return await newAppointment.save();
 };
-
 // Obtener todas las citas
 export const getAppointments = async () => {
   return await appointmentModel
@@ -32,6 +45,11 @@ export const getAppointmentById = async (id) => {
     throw new Error("Cita no encontrada");
   }
   return appointment;
+};
+
+// Obtener las citas de un empleado
+export const getAppointmentsByEmployee = async (employeeId) => {
+  return await appointmentModel.find({ employee: employeeId }).populate("service").populate("user").exec();
 };
 
 // Actualizar una cita
