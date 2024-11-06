@@ -32,6 +32,10 @@ const employeeModelSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 export default mongoose.model("Employee", employeeModelSchema);

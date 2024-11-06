@@ -1,4 +1,5 @@
 import Employee from "../models/employeeModel.js";
+import Appointment from "../models/appointmentModel.js";
 
 // Crear un nuevo empleado
 export const createEmployee = async (employeeData) => {
@@ -20,7 +21,7 @@ export const createEmployee = async (employeeData) => {
 
 // Obtener todos los empleados
 export const getEmployees = async () => {
-  return await Employee.find().populate('services').exec();
+  return await Employee.find().populate("services").exec();
 };
 
 // Obtener un empleado por ID
@@ -43,21 +44,31 @@ export const getEmployeeByPhoneNumber = async (phoneNumber) => {
 
 // Actualizar un empleado
 export const updateEmployee = async (id, employeeData) => {
-  const { names, position, email, phoneNumber, services, username, password } =
-    employeeData;
+  const {
+    names,
+    position,
+    email,
+    phoneNumber,
+    services,
+    username,
+    password,
+    isActive,
+  } = employeeData;
   const employee = await Employee.findById(id);
 
   if (!employee) {
     throw new Error("Empleado no encontrado");
   }
 
-  employee.names = names || employee.names;
-  employee.position = position || employee.position;
-  employee.email = email || employee.email;
-  employee.phoneNumber = phoneNumber || employee.phoneNumber;
-  employee.services = services || employee.services;
-  employee.username = username || employee.username;
-  employee.password = password || employee.password;
+  employee.names = names !== undefined ? names : employee.names;
+  employee.position = position !== undefined ? position : employee.position;
+  employee.email = email !== undefined ? email : employee.email;
+  employee.phoneNumber =
+    phoneNumber !== undefined ? phoneNumber : employee.phoneNumber;
+  employee.services = services !== undefined ? services : employee.services;
+  employee.username = username !== undefined ? username : employee.username;
+  employee.password = password !== undefined ? password : employee.password;
+  employee.isActive = isActive !== undefined ? isActive : employee.isActive;
 
   return await employee.save();
 };
@@ -67,6 +78,11 @@ export const deleteEmployee = async (id) => {
   const employee = await Employee.findById(id);
   if (!employee) {
     throw new Error("Empleado no encontrado");
+  }
+
+  const appointments = await Appointment.find({ employee: id });
+  if (appointments.length > 0) {
+    throw new Error("No puedes eliminar un empleado con citas asignadas");
   }
 
   await Employee.deleteOne({ _id: id });
