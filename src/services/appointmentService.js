@@ -2,7 +2,7 @@ import appointmentModel from "../models/appointmentModel.js";
 
 // Crear una nueva cita
 export const createAppointment = async (appointmentData) => {
-  const { service, employee, user, startDate, endDate } = appointmentData;
+  const { service, employee, client, startDate, endDate } = appointmentData;
 
   // Comprobar citas superpuestas
   const overlappingAppointments = await appointmentModel.find({
@@ -21,7 +21,7 @@ export const createAppointment = async (appointmentData) => {
   const newAppointment = new appointmentModel({
     service,
     employee,
-    user,
+    client,
     startDate,
     endDate,
   });
@@ -34,7 +34,7 @@ export const getAppointments = async () => {
     .find()
     .populate("service")
     .populate("employee")
-    .populate("user")
+    .populate("client")
     .exec();
 };
 
@@ -49,7 +49,7 @@ export const getAppointmentById = async (id) => {
 
 // Obtener las citas de un empleado
 export const getAppointmentsByEmployee = async (employeeId) => {
-  return await appointmentModel.find({ employee: employeeId }).populate("service").populate("user").exec();
+  return await appointmentModel.find({ employee: employeeId }).populate("service").populate("client").exec();
 };
 
 // Actualizar una cita

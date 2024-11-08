@@ -1,5 +1,5 @@
 import { Router } from "express";
-import userRoutes from "./users"
+import clientRoutes from "./client"
 import appointmentRoutes from "./appointments"
 import serviceRoutes from "./services"
 import imagesRoutes from "./images"
@@ -8,7 +8,7 @@ import advanceRoutes from "./advance"
 
 const router = Router();
 
-router.use(userRoutes);
+router.use(clientRoutes);
 router.use(appointmentRoutes);
 router.use(serviceRoutes);
 router.use(imagesRoutes);

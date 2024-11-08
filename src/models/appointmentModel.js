@@ -11,9 +11,9 @@ const appointmentModelSchema = new mongoose.Schema({
     ref: "Employee",
     required: true,
   },
-  user: {
+  client: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Client",
     required: true,
   },
   startDate: {

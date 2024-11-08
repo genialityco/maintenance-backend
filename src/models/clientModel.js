@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
+const clientSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // Método para incrementar los servicios tomados
-userSchema.methods.incrementServices = function() {
+clientSchema.methods.incrementServices = function() {
   this.servicesTaken += 1;
 
   // Otorgar un descuento por cada 7 servicios tomados
@@ -60,7 +60,7 @@ userSchema.methods.incrementServices = function() {
 };
 
 // Método para incrementar los referidos realizados
-userSchema.methods.incrementReferrals = function() {
+clientSchema.methods.incrementReferrals = function() {
   this.referralsMade += 1;
   this.servicesTaken += 1; // Cada referido cuenta también como un servicio
 
@@ -87,6 +87,6 @@ userSchema.methods.incrementReferrals = function() {
   return this.save();
 };
 
-const User = mongoose.model('User', userSchema);
+const Client = mongoose.model('Client', clientSchema);
 
-export default User;
+export default Client;
