@@ -31,18 +31,27 @@ const notificationService = {
   // Enviar notificación push a una suscripción específica
   sendNotification: async (userId, payload) => {
     try {
-      const supscriptionData = await notificationService.getSubscriptionsByUser(
-        userId
-      );
-      const supscription = {
-        endpoint: supscriptionData[0].endpoint,
-        keys: {
-          auth: supscriptionData[0].keys.auth,
-          p256dh: supscriptionData[0].keys.p256dh,
-        },
+      const subscriptionsData =
+        await notificationService.getSubscriptionsByUser(userId);
+
+      if (subscriptionsData.length === 0) {
+        console.log("No hay suscripciones para el usuario");
+        return;
       }
-      await webPush.sendNotification(supscription, JSON.stringify(payload));
-      console.log("Notificación enviada correctamente");
+
+      const notifications = subscriptionsData.map(async (subscriptionData) => {
+        const subscription = {
+          endpoint: subscriptionData.endpoint,
+          keys: {
+            auth: subscriptionData.keys.auth,
+            p256dh: subscriptionData.keys.p256dh,
+          },
+        };
+        await webPush.sendNotification(subscription, JSON.stringify(payload));
+      });
+
+      await Promise.all(notifications);
+      console.log("Notificaciones enviadas correctamente");
     } catch (error) {
       console.error("Error al enviar notificación:", error);
     }
