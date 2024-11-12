@@ -4,14 +4,16 @@ export const uploadImage = async (req, res) => {
   try {
     // `req.file` contiene el archivo subido por `multer`
     const { originalname, buffer } = req.file;
+    const { folder } = req.params;
 
     if (!buffer || !originalname) {
       return res.status(400).json({ message: "El archivo es necesario" });
     }
 
     const response = await imagekit.upload({
-      file: buffer.toString("base64"), // Convertir buffer a base64
+      file: buffer.toString("base64"),
       fileName: originalname,
+      folder: `/${folder}`,
     });
 
     res.status(200).json({ imageUrl: response.url });

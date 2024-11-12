@@ -1,28 +1,42 @@
 import express from "express";
-import {
-  createClient,
-  getClients,
-  getClientById,
-  updateClient,
-  deleteClient,
-  getClientByPhoneNumber,
-  registerReferral,
-  registerService,
-} from "../controllers/clientController.js";
+import clientController from "../controllers/clientController.js";
 
 const router = express.Router();
 
-// Rutas CRUD para clientes
-router.post("/client", createClient);
-router.get("/client", getClients);
-router.get("/client/:id", getClientById);
-router.put("/client/:id", updateClient);
-router.delete("/client/:id", deleteClient);
+// Ruta para crear un cliente
+router.post("/clients", clientController.createClient);
 
-router.get("/client/phone/:phoneNumber", getClientByPhoneNumber);
+// Ruta para obtener todos los clientes
+router.get("/clients", clientController.getClients);
 
-// Rutas para registrar servicios y referidos
-router.post("/client/service/:id", registerService);
-router.post("/client/referral/:id", registerReferral);
+// Obtener los clientes por organizationId
+router.get(
+  "/clients/organization/:organizationId",
+  clientController.getClientsByOrganizationId
+);
+
+// Ruta para obtener un cliente específico por ID
+router.get("/clients/:id", clientController.getClientById);
+
+// Ruta para obtener un cliente por número de teléfono y organizacion
+router.get(
+  "/clients/phone/:phoneNumber/organization/:organizationId",
+  clientController.getClientByPhoneNumberAndOrganization
+);
+
+// Ruta para actualizar un cliente específico por ID
+router.put("/clients/:id", clientController.updateClient);
+
+// Ruta para eliminar un cliente específico por ID
+router.delete("/clients/:id", clientController.deleteClient);
+
+// Ruta para registrar un servicio para un cliente
+router.post("/clients/:id/register-service", clientController.registerService);
+
+// Ruta para registrar un referido para un cliente
+router.post(
+  "/clients/:id/register-referral",
+  clientController.registerReferral
+);
 
 export default router;

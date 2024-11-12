@@ -1,21 +1,24 @@
 import express from "express";
-import {
-  createAdvance,
-  getAdvances,
-  getAdvanceById,
-  getAdvancesByEmployee,
-  updateAdvance,
-  deleteAdvance,
-} from "../controllers/advanceController.js";
+import advanceController from "../controllers/advanceController.js";
 
 const router = express.Router();
 
-// Rutas CRUD para avances
-router.post("/advance", createAdvance);
-router.get("/advance", getAdvances);
-router.get("/advance/:id", getAdvanceById);
-router.get("/advance/employee/:employeeId", getAdvancesByEmployee);
-router.put("/advance/:id", updateAdvance);
-router.delete("/advance/:id", deleteAdvance);
+// Crear un nuevo avance
+router.post("/advances", advanceController.createAdvance);
+
+// Obtener todos los avances
+router.get("/advances", advanceController.getAdvances);
+
+// Obtener un avance específico por ID
+router.get("/advances/:id", advanceController.getAdvanceById);
+
+// Obtener todos los avances de un empleado específico
+router.get("/advances/employee/:employeeId", advanceController.getAdvancesByEmployee);
+
+// Actualizar un avance específico por ID
+router.put("/advances/:id", advanceController.updateAdvance);
+
+// Eliminar un avance específico por ID
+router.delete("/advances/:id", advanceController.deleteAdvance);
 
 export default router;

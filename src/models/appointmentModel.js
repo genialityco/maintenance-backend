@@ -29,6 +29,11 @@ const appointmentModelSchema = new mongoose.Schema({
     enum: ["pending", "confirmed", "cancelled"],
     default: "pending",
   },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Organization",
+    required: true,
+  },
 });
 
 export default mongoose.model("Appointment", appointmentModelSchema);

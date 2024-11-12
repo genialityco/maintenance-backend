@@ -1,27 +1,33 @@
 import express from "express";
-import {
-  createEmployee,
-  getEmployees,
-  getEmployeeById,
-  updateEmployee,
-  deleteEmployee,
-} from "../controllers/employeeController.js";
+import employeeController from "../controllers/employeeController.js";
 
 const router = express.Router();
 
-// Ruta para crear un nuevo servicio
-router.post("/employees", createEmployee);
+// Ruta para crear un empleado
+router.post("/employees", employeeController.createEmployee);
 
-// Ruta para obtener todos los servicios
-router.get("/employees", getEmployees);
+// Ruta para obtener todos los empleados
+router.get("/employees", employeeController.getEmployees);
 
-// Ruta para obtener un servicio por ID
-router.get("/employees/:id", getEmployeeById);
+// Obtener los empleados por organizationId
+router.get(
+  "/employees/organization/:organizationId",
+  employeeController.getEmployeesByOrganizationId
+);
 
-// Ruta para actualizar un servicio por ID
-router.put("/employees/:id", updateEmployee);
+// Ruta para obtener un empleado específico por ID
+router.get("/employees/:id", employeeController.getEmployeeById);
 
-// Ruta para eliminar un servicio por ID
-router.delete("/employees/:id", deleteEmployee);
+// Ruta para obtener un empleado por número de teléfono
+router.get(
+  "/employees/phone/:phoneNumber",
+  employeeController.getEmployeeByPhoneNumber
+);
+
+// Ruta para actualizar un empleado específico por ID
+router.put("/employees/:id", employeeController.updateEmployee);
+
+// Ruta para eliminar un empleado específico por ID
+router.delete("/employees/:id", employeeController.deleteEmployee);
 
 export default router;

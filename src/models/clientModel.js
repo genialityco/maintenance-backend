@@ -38,6 +38,11 @@ const clientSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Organization',
+    required: true,
+  }
 }, {
   timestamps: true
 });

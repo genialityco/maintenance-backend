@@ -1,54 +1,60 @@
 import Service from "../models/serviceModel.js";
 
-// Crear un nuevo servicio
-export const createService = async (serviceData) => {
-  const { images, name, description, price, duration, type } = serviceData;
+const serviceService = {
+  // Crear un nuevo servicio
+  createService: async (serviceData) => {
+    const { images, name, description, price, duration, type, organizationId } =
+      serviceData;
+    const newService = new Service({
+      images,
+      name,
+      description,
+      price,
+      duration,
+      type,
+      organizationId,
+    });
+    return await newService.save();
+  },
 
-  const newService = new Service({
-    images,
-    name,
-    description,
-    price,
-    duration,
-    type
-  });
+  // Obtener todos los servicios
+  getServices: async () => {
+    return await Service.find();
+  },
 
-  return await newService.save();
+  // Obtener servicios por organizationId
+  getServicesByOrganizationId: async (organizationId) => {
+    return await Service.find({ organizationId });
+  },
+
+  // Obtener un servicio por ID
+  getServiceById: async (id) => {
+    const service = await Service.findById(id);
+    if (!service) {
+      throw new Error("Servicio no encontrado");
+    }
+    return service;
+  },
+
+  // Actualizar un servicio
+  updateService: async (id, updatedData) => {
+    const service = await Service.findById(id);
+    if (!service) {
+      throw new Error("Servicio no encontrado");
+    }
+    service.set(updatedData);
+    return await service.save();
+  },
+
+  // Eliminar un servicio
+  deleteService: async (id) => {
+    const service = await Service.findById(id);
+    if (!service) {
+      throw new Error("Servicio no encontrado");
+    }
+    await service.deleteOne();
+    return { message: "Servicio eliminado correctamente" };
+  },
 };
 
-// Obtener todos los servicios
-export const getServices = async () => {
-  return await Service.find();
-};
-
-// Obtener un servicio por ID
-export const getServiceById = async (id) => {
-  const service = await Service.findById(id);
-  if (!service) {
-    throw new Error("Servicio no encontrado");
-  }
-  return service;
-};
-
-// Actualizar un servicio
-export const updateService = async (id, updatedData) => {
-  const service = await Service.findById(id);
-
-  if (!service) {
-    throw new Error("Servicio no encontrado");
-  }
-
-  service.set(updatedData);
-  return await service.save();
-};
-
-// Eliminar un servicio
-export const deleteService = async (id) => {
-  const service = await Service.findById(id);
-  if (!service) {
-    throw new Error("Servicio no encontrado");
-  }
-
-  await service.deleteOne();
-  return { message: "Servicio eliminado correctamente" };
-};
+export default serviceService;
