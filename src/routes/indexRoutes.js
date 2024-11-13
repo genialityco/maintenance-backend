@@ -8,7 +8,7 @@ import advanceRoutes from "./advance"
 import roleRoutes from "./role"
 import organizationRoutes from "./organizationRoutes"
 import authRoutes from "./authRoutes"
-import notificationRoutes from "./notificationRoutes"
+import subscriptionRoutes from "./subscriptionRoutes"
 
 const router = Router();
 
@@ -21,6 +21,6 @@ router.use(advanceRoutes);
 router.use(roleRoutes);
 router.use(organizationRoutes);
 router.use(authRoutes);
-router.use(notificationRoutes);
+router.use(subscriptionRoutes);
 
 export default router;

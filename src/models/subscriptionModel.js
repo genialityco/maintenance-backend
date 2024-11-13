@@ -6,11 +6,6 @@ const subscriptionSchema = new Schema({
     p256dh: { type: String, required: true },
     auth: { type: String, required: true },
   },
-  userType: {
-    type: String,
-    required: true,
-    enum: ["organization", "employee"],
-  },
   userId: { type: Types.ObjectId, required: true },
 });
 
