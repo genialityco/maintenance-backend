@@ -1,4 +1,5 @@
 import appointmentService from "../services/appointmentService.js";
+import subscriptionService from "../services/subscriptionService.js";
 import sendResponse from "../utils/sendResponse.js";
 
 const appointmentController = {
@@ -9,6 +10,12 @@ const appointmentController = {
         req.body
       );
       sendResponse(res, 201, newAppointment, "Cita creada exitosamente");
+      const notify = {
+        title: "Cita creada",
+        message: "Se te ha asignado una nueva cita",
+        userId: newAppointment.employee,
+      };
+      await subscriptionService.sendNotificationToUser(notify);
     } catch (error) {
       sendResponse(res, 500, null, error.message);
     }
@@ -86,6 +93,11 @@ const appointmentController = {
         updatedAppointment,
         "Cita actualizada exitosamente"
       );
+      await subscriptionService.sendNotificationToUser({
+        title: "Cita actualizada",
+        message: "Se ha actualizado una cita",
+        userId: updatedAppointment.employee,
+      });
     } catch (error) {
       sendResponse(res, 404, null, error.message);
     }
@@ -97,6 +109,11 @@ const appointmentController = {
     try {
       const result = await appointmentService.deleteAppointment(id);
       sendResponse(res, 200, null, result.message);
+      await subscriptionService.sendNotificationToUser({
+        title: "Cita eliminada",
+        message: "Se ha eliminado una cita",
+        userId: result.appointment.employee,
+      });
     } catch (error) {
       sendResponse(res, 404, null, error.message);
     }
