@@ -1,13 +1,5 @@
 import subscriptionService from "../services/subscriptionService.js";
-import webPush from "web-push";
 import sendResponse from "../utils/sendResponse.js";
-
-// Configuración de VAPID
-webPush.setVapidDetails(
-  "mailto:lassojuanfe@gmail.com",
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
 
 const subscriptionController = {
   // Guardar una nueva suscripción
@@ -29,7 +21,6 @@ const subscriptionController = {
 
   // Enviar notificación a una suscripción específica
   sendNotificationToUser: async (req, res) => {
-    // const { userId } = req.params;
     const { title, message, userId } = req.body;
     const payload = JSON.stringify({
       title: title || "Notificación de Galaxia Glamour",
@@ -37,33 +28,7 @@ const subscriptionController = {
     });
 
     try {
-      const subscriptions = await subscriptionService.getSubscriptionsByUserId(
-        userId
-      );
-      if (!subscriptions.length) {
-        throw new Error("No hay suscripciones para este usuario");
-      }
-
-      // Configuración de las opciones para `web-push`
-      const options = {
-        vapidDetails: {
-          subject: "mailto:lassojuanfe@gmail.com",
-          publicKey: process.env.VAPID_PUBLIC_KEY,
-          privateKey: process.env.VAPID_PRIVATE_KEY,
-        },
-        TTL: 60 * 60, // Tiempo de vida de 1 hora
-        urgency: "high", // Entrega de alta prioridad
-        contentEncoding: "aes128gcm", // Codificación recomendada
-      };
-
-      subscriptions.forEach(async (subscription) => {
-        try {
-          await webPush.sendNotification(subscription, payload, options);
-        } catch (error) {
-          console.error("Error al enviar notificación:", error);
-        }
-      });
-
+      await subscriptionService.sendNotificationToUser(userId, payload);
       sendResponse(res, 200, null, "Notificación enviada al usuario");
     } catch (error) {
       sendResponse(res, 500, null, error.message);
@@ -79,31 +44,7 @@ const subscriptionController = {
     });
 
     try {
-      const subscriptions = await subscriptionService.getAllSubscriptions();
-      if (!subscriptions.length) {
-        throw new Error("No hay suscripciones registradas");
-      }
-
-      // Configuración de las opciones para `web-push`
-      const options = {
-        vapidDetails: {
-          subject: "mailto:lassojuanfe@gmail.com",
-          publicKey: process.env.VAPID_PUBLIC_KEY,
-          privateKey: process.env.VAPID_PRIVATE_KEY,
-        },
-        TTL: 60 * 60, // Tiempo de vida de 1 hora
-        urgency: "high", // Entrega de alta prioridad
-        contentEncoding: "aes128gcm", // Codificación recomendada
-      };
-
-      subscriptions.forEach(async (subscription) => {
-        try {
-          await webPush.sendNotification(subscription, payload, options);
-        } catch (error) {
-          console.error("Error al enviar notificación:", error);
-        }
-      });
-
+      await subscriptionService.sendNotificationToAll(payload);
       sendResponse(
         res,
         200,

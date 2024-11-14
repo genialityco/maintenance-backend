@@ -30,53 +30,6 @@ app.get("/", (req, res) => {
   res.send("API galaxia glamour");
 });
 
-// Endpoint para gestionar suscripciones de usuarios
-app.post("/api/subscribe", async (req, res) => {
-  try {
-    const subscription = req.body;
-    // Guarda la suscripción en tu base de datos (o en un archivo temporal para pruebas)
-    // Aquí podrías usar un servicio que maneje las suscripciones
-    await saveSubscriptionToDatabase(subscription);
-    res.status(201).json({ message: "Subscription saved successfully" });
-  } catch (error) {
-    console.error("Error saving subscription:", error);
-    res.status(500).json({ error: "Failed to save subscription" });
-  }
-});
-
-// Endpoint para enviar notificación a una suscripción específica
-app.post("/api/notify", async (req, res) => {
-  const { subscription, payload } = req.body;
-
-  try {
-    await webPush.sendNotification(subscription, JSON.stringify(payload));
-    res.status(200).json({ message: "Notification sent" });
-  } catch (error) {
-    console.error("Error sending notification:", error);
-    res.status(500).json({ error: "Failed to send notification" });
-  }
-});
-
-// Endpoint para enviar notificaciones masivas
-app.post("/api/notify-all", async (req, res) => {
-  const payload = req.body.payload;
-
-  try {
-    const subscriptions = await getAllSubscriptionsFromDatabase();
-    subscriptions.forEach(async (subscription) => {
-      try {
-        await webPush.sendNotification(subscription, JSON.stringify(payload));
-      } catch (error) {
-        console.error("Error sending notification to subscription:", error);
-      }
-    });
-    res.status(200).json({ message: "Notifications sent to all users" });
-  } catch (error) {
-    console.error("Error sending notifications:", error);
-    res.status(500).json({ error: "Failed to send notifications" });
-  }
-});
-
 // Manejo de errores
 app.use((err, req, res, next) => {
   console.error(err.stack || err);

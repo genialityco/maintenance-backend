@@ -9,6 +9,7 @@ import roleRoutes from "./role"
 import organizationRoutes from "./organizationRoutes"
 import authRoutes from "./authRoutes"
 import subscriptionRoutes from "./subscriptionRoutes"
+import whatsappRoutes from "./whatsappRoutes"
 
 const router = Router();
 
@@ -22,5 +23,6 @@ router.use(roleRoutes);
 router.use(organizationRoutes);
 router.use(authRoutes);
 router.use(subscriptionRoutes);
+router.use(whatsappRoutes);
 
 export default router;

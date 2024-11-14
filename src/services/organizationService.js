@@ -47,13 +47,14 @@ const organizationService = {
 
   // Actualizar una organización
   updateOrganization: async (id, organizationData) => {
-    const { email, password, phoneNumber, role, isActive } = organizationData;
+    const { name, email, password, phoneNumber, role, isActive } = organizationData;
     const organization = await Organization.findById(id);
 
     if (!organization) {
       throw new Error("Organización no encontrada");
     }
 
+    organization.name = name !== undefined ? name : organization.name;
     organization.email = email !== undefined ? email : organization.email;
     organization.phoneNumber =
       phoneNumber !== undefined ? phoneNumber : organization.phoneNumber;

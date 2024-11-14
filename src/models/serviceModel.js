@@ -8,6 +8,7 @@ const serviceSchema = new Schema({
   price: { type: Number, required: true },
   duration: { type: Number, required: true },
   organizationId: { type: Types.ObjectId, ref: "Organization", required: true },
+  isActive: { type: Boolean, default: true },
 });
 
 export default model("Service", serviceSchema);

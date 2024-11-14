@@ -9,13 +9,16 @@ const appointmentController = {
       const newAppointment = await appointmentService.createAppointment(
         req.body
       );
-      sendResponse(res, 201, newAppointment, "Cita creada exitosamente");
       const notify = {
         title: "Cita creada",
         message: "Se te ha asignado una nueva cita",
         userId: newAppointment.employee,
       };
-      await subscriptionService.sendNotificationToUser(notify);
+      await subscriptionService.sendNotificationToUser(
+        notify.userId,
+        JSON.stringify(notify)
+      );
+      sendResponse(res, 201, newAppointment, "Cita creada exitosamente");
     } catch (error) {
       sendResponse(res, 500, null, error.message);
     }
@@ -87,17 +90,22 @@ const appointmentController = {
         id,
         req.body
       );
+
+      const notify = {
+        title: "Cita actualizada",
+        message: "Se ha actualizado una cita",
+      };
+
+      await subscriptionService.sendNotificationToUser(
+        updatedAppointment.employee,
+        JSON.stringify(notify)
+      );
       sendResponse(
         res,
         200,
         updatedAppointment,
         "Cita actualizada exitosamente"
       );
-      await subscriptionService.sendNotificationToUser({
-        title: "Cita actualizada",
-        message: "Se ha actualizado una cita",
-        userId: updatedAppointment.employee,
-      });
     } catch (error) {
       sendResponse(res, 404, null, error.message);
     }
@@ -107,13 +115,19 @@ const appointmentController = {
   deleteAppointment: async (req, res) => {
     const { id } = req.params;
     try {
+      const appointmentData = await appointmentService.getAppointmentById(id);
       const result = await appointmentService.deleteAppointment(id);
+
+      const notify = {
+        title: "Cita cancelada",
+        message: "Se ha cancelado una cita",
+      };
+
+      await subscriptionService.sendNotificationToUser(
+        appointmentData.employee,
+        JSON.stringify(notify)
+      );
       sendResponse(res, 200, null, result.message);
-      await subscriptionService.sendNotificationToUser({
-        title: "Cita eliminada",
-        message: "Se ha eliminado una cita",
-        userId: result.appointment.employee,
-      });
     } catch (error) {
       sendResponse(res, 404, null, error.message);
     }
