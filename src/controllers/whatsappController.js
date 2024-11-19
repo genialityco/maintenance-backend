@@ -3,11 +3,16 @@ import sendResponse from "../utils/sendResponse";
 
 const whatsappController = {
   sendWhatsappReminder: async (req, res) => {
-    const { phone, message, appointmentDetails } = req.body;
+    const { phone } = req.body;
+    const appointmentDetails = {
+      names: "Maria Paula",
+      date: "17 de noviembre",
+      organzation: "Galaxia Glamour",
+      phoneNumber: "3218104634"
+    }
     try {
       const response = await whatsappService.sendWhatsappReminder(
         phone,
-        message,
         appointmentDetails
       );
       sendResponse(res, 200, response, "Mensaje enviado correctamente");

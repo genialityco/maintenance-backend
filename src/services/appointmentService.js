@@ -1,4 +1,5 @@
 import appointmentModel from "../models/appointmentModel.js";
+import whatsappService from "./sendWhatsappService.js";
 
 const appointmentService = {
   // Crear una nueva cita
@@ -91,6 +92,48 @@ const appointmentService = {
 
     await appointment.deleteOne();
     return { message: "Cita eliminada correctamente" };
+  },
+
+  sendDailyReminders: async () => {
+    const currentDate = new Date();
+    const tomorrow = new Date(currentDate);
+    tomorrow.setDate(currentDate.getDate() + 1);
+    tomorrow.setHours(8, 0, 0, 0);
+
+    // Buscar citas para el día siguiente y que aún no se les haya enviado recordatorio
+    const appointments = await appointmentModel
+      .find({
+        _id: "673bf4b827fe6fe620f2529a",
+        startDate: { $gte: tomorrow, $lt: new Date(tomorrow).setHours(24) },
+        reminderSent: false,
+      })
+      .populate("client")
+      .populate("service")
+      .populate("employee")
+      .populate("organizationId");
+
+    for (const appointment of appointments) {
+      const phone = appointment.client.phoneNumber;
+      const appointmentDate = appointment.startDate.toLocaleDateString("es-ES", {
+        day: "numeric",
+        month: "long",
+      });
+      const appointmentDetails = {
+        names: appointment.client.name,
+        date: appointmentDate,
+        organization: appointment.organizationId.name,
+        service: `${appointment.service.type} - ${appointment.service.name}`,
+        phoneNumber: appointment.organizationId.phoneNumber,
+      };
+
+      try {
+        await whatsappService.sendWhatsappReminder(phone, appointmentDetails);
+        appointment.reminderSent = true;
+        await appointment.save();
+      } catch (error) {
+        console.error(`Error enviando recordatorio: ${error.message}`);
+      }
+    }
   },
 };
 

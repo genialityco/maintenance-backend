@@ -45,7 +45,6 @@ const subscriptionService = {
 
     try {
       await webPush.sendNotification(subscription, payload, options);
-      console.log("Notificación enviada");
     } catch (error) {
       console.error("Error al enviar notificación:", error);
     }
@@ -56,10 +55,6 @@ const subscriptionService = {
     const subscriptions = await subscriptionService.getSubscriptionsByUserId(
       userId
     );
-
-    if (!subscriptions.length) {
-      throw new Error("No hay suscripciones para este usuario");
-    }
 
     subscriptions.forEach(async (subscription) => {
       await subscriptionService.sendNotification(subscription, payload);

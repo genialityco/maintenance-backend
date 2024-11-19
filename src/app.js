@@ -7,15 +7,19 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import routes from "./routes/indexRoutes.js";
+import reminderJob from "./cron/reminderJob.js";
 
 const app = express();
 
 // Configura web-push con las claves VAPID
 webPush.setVapidDetails(
-  "mailto:tu-email@ejemplo.com", // Correo de contacto
+  "mailto:lassojuanfe@gmail.com",
   process.env.VAPID_PUBLIC_KEY,
   process.env.VAPID_PRIVATE_KEY
 );
+
+// Ejecutar el cron job de recordatorios
+reminderJob();
 
 app.use(cors({ origin: "*" }));
 app.use(morgan("dev"));

@@ -34,6 +34,7 @@ const appointmentModelSchema = new mongoose.Schema({
     ref: "Organization",
     required: true,
   },
+  reminderSent: { type: Boolean, default: false }
 });
 
 export default mongoose.model("Appointment", appointmentModelSchema);
