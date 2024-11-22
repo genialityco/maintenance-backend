@@ -103,7 +103,6 @@ const appointmentService = {
     // Buscar citas para el día siguiente y que aún no se les haya enviado recordatorio
     const appointments = await appointmentModel
       .find({
-        _id: "673bf4b827fe6fe620f2529a",
         startDate: { $gte: tomorrow, $lt: new Date(tomorrow).setHours(24) },
         reminderSent: false,
       })
