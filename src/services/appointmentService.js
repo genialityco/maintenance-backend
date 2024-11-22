@@ -96,44 +96,57 @@ const appointmentService = {
 
   sendDailyReminders: async () => {
     const currentDate = new Date();
-    const tomorrow = new Date(currentDate);
-    tomorrow.setDate(currentDate.getDate() + 1);
-    tomorrow.setHours(8, 0, 0, 0);
-
-    // Buscar citas para el día siguiente y que aún no se les haya enviado recordatorio
-    const appointments = await appointmentModel
-      .find({
-        startDate: { $gte: tomorrow, $lt: new Date(tomorrow).setHours(24) },
-        reminderSent: false,
-      })
-      .populate("client")
-      .populate("service")
-      .populate("employee")
-      .populate("organizationId");
-
-    for (const appointment of appointments) {
-      const phone = appointment.client.phoneNumber;
-      const appointmentDate = appointment.startDate.toLocaleDateString("es-ES", {
-        day: "numeric",
-        month: "long",
-      });
-      const appointmentDetails = {
-        names: appointment.client.name,
-        date: appointmentDate,
-        organization: appointment.organizationId.name,
-        service: `${appointment.service.type} - ${appointment.service.name}`,
-        phoneNumber: appointment.organizationId.phoneNumber,
-      };
-
-      try {
-        await whatsappService.sendWhatsappReminder(phone, appointmentDetails);
-        appointment.reminderSent = true;
-        await appointment.save();
-      } catch (error) {
-        console.error(`Error enviando recordatorio: ${error.message}`);
+    const colombiaOffset = -5; // Offset de Colombia respecto a UTC
+    const colombiaTime = new Date(currentDate.getTime() + colombiaOffset * 60 * 60 * 1000);
+  
+    // Calcular el rango de fechas para el día siguiente en hora de Colombia
+    const tomorrow = new Date(colombiaTime);
+    tomorrow.setDate(colombiaTime.getDate() + 1); // Día siguiente
+    tomorrow.setHours(8, 0, 0, 0); // Inicio del día siguiente a las 8:00 AM
+  
+    const endOfTomorrow = new Date(tomorrow);
+    endOfTomorrow.setHours(23, 59, 59, 999); // Fin del día siguiente a las 11:59 PM
+  
+    try {
+      // Buscar citas para el día siguiente y que aún no se les haya enviado recordatorio
+      const appointments = await appointmentModel
+        .find({
+          startDate: { $gte: tomorrow, $lt: endOfTomorrow },
+          reminderSent: false,
+        })
+        .populate("client")
+        .populate("service")
+        .populate("employee")
+        .populate("organizationId");
+  
+  
+      for (const appointment of appointments) {
+        const phone = appointment.client.phoneNumber;
+        const appointmentDate = appointment.startDate.toLocaleDateString("es-ES", {
+          day: "numeric",
+          month: "long",
+        });
+        const appointmentDetails = {
+          names: appointment.client.name,
+          date: appointmentDate,
+          organization: appointment.organizationId.name,
+          service: `${appointment.service.type} - ${appointment.service.name}`,
+          phoneNumber: appointment.organizationId.phoneNumber,
+        };
+  
+        try {
+          await whatsappService.sendWhatsappReminder(phone, appointmentDetails);
+          appointment.reminderSent = true;
+          await appointment.save();
+        } catch (error) {
+          console.error(`Error enviando recordatorio para ${phone}:`, error.message);
+        }
       }
+    } catch (error) {
+      console.error("Error ejecutando sendDailyReminders:", error.message);
     }
-  },
+  }
+  
 };
 
 export default appointmentService;
