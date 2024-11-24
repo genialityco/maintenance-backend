@@ -11,10 +11,9 @@ router.get("/appointments", appointmentController.getAppointments);
 
 // Obtener citas por organizationId
 router.get(
-  "/appointments/organization/:organizationId",
-  appointmentController.getAppointmentsByOrganizationId
+  "/appointments/organization/:organizationId/dates",
+  appointmentController.getAppointmentsByOrganizationWithDates
 );
-
 // Obtener una cita específica por ID
 router.get("/appointments/:id", appointmentController.getAppointmentById);
 
