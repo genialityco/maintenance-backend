@@ -3,6 +3,9 @@ import subscriptionController from "../controllers/subscriptionController.js";
 
 const router = express.Router();
 
+// Ruta para obtener una suscripción por endpoint
+router.get("/subscribe/endoint", subscriptionController.getSubscriptionByEndpoint);
+
 // Ruta para guardar una suscripción
 router.post("/subscribe", subscriptionController.saveSubscription);
 

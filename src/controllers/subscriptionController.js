@@ -55,6 +55,37 @@ const subscriptionController = {
       sendResponse(res, 500, null, error.message);
     }
   },
+
+  getSubscriptionByEndpoint: async (req, res) => {
+    const { endpoint } = req.body;
+    try {
+      const subscription = await subscriptionService.getSubscriptionByEndpoint(
+        endpoint
+      );
+
+      if (!subscription) {
+        return sendResponse(
+          res,
+          404,
+          null,
+          "No se encontró ninguna suscripción con el endpoint proporcionado."
+        );
+      }
+      sendResponse(
+        res,
+        200,
+        subscription,
+        "Suscripción existente con el endpoint."
+      );
+    } catch (error) {
+      sendResponse(
+        res,
+        500,
+        null,
+        "Error al obtener la suscripción: " + error.message
+      );
+    }
+  },
 };
 
 export default subscriptionController;

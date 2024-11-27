@@ -12,12 +12,24 @@ const subscriptionService = {
   // Guardar una suscripción
   saveSubscription: async (subscriptionData) => {
     const { endpoint, keys, userId } = subscriptionData;
+    const existingEndpoint = await Subscription.find({endpoint});
+
+    if(existingEndpoint) {
+      throw new Error("Endpoint ya registrado");
+    }
+    
     const newSubscription = new Subscription({
       endpoint,
       keys,
       userId,
     });
     return await newSubscription.save();
+  },
+
+  // Obtener una suscripción por endpoint
+
+  getSubscriptionByEndpoint: async (endpoint) => {
+    return await Subscription.findOne({endpoint});
   },
 
   // Obtener todas las suscripciones
