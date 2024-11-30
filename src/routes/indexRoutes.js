@@ -11,6 +11,7 @@ import authRoutes from "./authRoutes"
 import subscriptionRoutes from "./subscriptionRoutes"
 import whatsappRoutes from "./whatsappRoutes"
 import cronRoutes from "./cronRoutes"
+import reservationRoutes from "./reservation"
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use(authRoutes);
 router.use(subscriptionRoutes);
 router.use(whatsappRoutes);
 router.use(cronRoutes);
+router.use(reservationRoutes);
 
 export default router;

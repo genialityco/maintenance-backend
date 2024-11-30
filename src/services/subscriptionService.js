@@ -12,17 +12,20 @@ const subscriptionService = {
   // Guardar una suscripción
   saveSubscription: async (subscriptionData) => {
     const { endpoint, keys, userId } = subscriptionData;
-    const existingEndpoint = await Subscription.find({endpoint});
 
-    if(existingEndpoint) {
-      throw new Error("Endpoint ya registrado");
+    // Verificar si ya existe el endpoint
+    const existingEndpoint = await Subscription.findOne({ endpoint });
+    if (existingEndpoint) {
+      throw new Error("El endpoint ya está registrado");
     }
-    
+
+    // Crear una nueva suscripción si no existe
     const newSubscription = new Subscription({
       endpoint,
       keys,
       userId,
     });
+
     return await newSubscription.save();
   },
 
