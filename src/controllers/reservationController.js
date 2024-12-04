@@ -27,11 +27,7 @@ const reservationController = {
         employeeId: employeeId || null,
         startDate,
         customer: customer._id,
-        customerDetails: {
-          name: customerDetails.name,
-          phone: customerDetails.phoneNumber,
-          email: customerDetails.email,
-        },
+        customerDetails: customerDetails,
         organizationId,
       });
 
