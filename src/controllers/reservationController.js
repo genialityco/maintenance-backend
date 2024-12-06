@@ -1,4 +1,6 @@
+import organizationService from "../services/organizationService.js";
 import reservationService from "../services/reservationService.js";
+import subscriptionService from "../services/subscriptionService.js"
 import sendResponse from "../utils/sendResponse.js";
 
 const reservationController = {
@@ -16,7 +18,7 @@ const reservationController = {
       // Validar o crear cliente
       const customer = await reservationService.ensureClientExists({
         name: customerDetails.name,
-        phone: customerDetails.phoneNumber,
+        phoneNumber: customerDetails.phone,
         email: customerDetails.email,
         organizationId,
       });
@@ -30,6 +32,18 @@ const reservationController = {
         customerDetails: customerDetails,
         organizationId,
       });
+
+      const adminOrganization = await organizationService.getOrganizationById(organizationId);
+      
+      const notify = {
+        title: "Nueva reserva",
+        message: "Tienes una nueva reserva pendiente por confirmar",
+      };
+
+      await subscriptionService.sendNotificationToUser(
+        adminOrganization._id,
+        JSON.stringify(notify)
+      );
 
       sendResponse(res, 201, newReservation, "Reserva creada exitosamente");
     } catch (error) {

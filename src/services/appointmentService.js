@@ -98,6 +98,7 @@ const appointmentService = {
   },
 
   // Actualizar una cita
+  // Actualizar una cita
   updateAppointment: async (id, updatedData) => {
     const appointment = await appointmentModel.findById(id);
 
@@ -105,6 +106,28 @@ const appointmentService = {
       throw new Error("Cita no encontrada");
     }
 
+    const { employee, startDate, endDate } = updatedData;
+
+    // Validar citas superpuestas
+    if (employee && startDate && endDate) {
+      const overlappingAppointments = await appointmentModel.find({
+        employee,
+        _id: { $ne: id }, // Excluir la cita actual
+        $or: [
+          { startDate: { $lt: endDate, $gte: startDate } },
+          { endDate: { $gt: startDate, $lte: endDate } },
+          { startDate: { $lte: startDate }, endDate: { $gte: endDate } },
+        ],
+      });
+
+      if (overlappingAppointments.length > 0) {
+        throw new Error(
+          "El empleado tiene citas que se cruzan en el horario seleccionado"
+        );
+      }
+    }
+
+    // Actualizar los datos de la cita
     appointment.set(updatedData);
     return await appointment.save();
   },
