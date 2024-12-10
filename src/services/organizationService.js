@@ -4,8 +4,18 @@ import bcrypt from "bcryptjs";
 const organizationService = {
   // Crear una nueva organización
   createOrganization: async (organizationData) => {
-    const { name, email, password, phoneNumber, role, isActive } =
-      organizationData;
+    const {
+      name,
+      email,
+      password,
+      phoneNumber,
+      role,
+      instagramUrl,
+      facebookUrl,
+      whatsappUrl,
+      tiktokUrl,
+      isActive,
+    } = organizationData;
 
     // Encriptar la contraseña antes de guardarla
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -17,6 +27,10 @@ const organizationService = {
       phoneNumber,
       role,
       isActive,
+      instagramUrl,
+      facebookUrl,
+      whatsappUrl,
+      tiktokUrl,
     });
 
     const savedOrganization = await newOrganization.save();
@@ -29,7 +43,7 @@ const organizationService = {
   // Obtener todas las organizaciones
   getOrganizations: async () => {
     return await Organization.find()
-      .select("-password") // Excluir el campo password
+      .select("-password")
       .populate("role")
       .exec();
   },
@@ -47,7 +61,8 @@ const organizationService = {
 
   // Actualizar una organización
   updateOrganization: async (id, organizationData) => {
-    const { name, email, password, phoneNumber, role, isActive } = organizationData;
+    const { name, email, password, phoneNumber, role, isActive } =
+      organizationData;
     const organization = await Organization.findById(id);
 
     if (!organization) {

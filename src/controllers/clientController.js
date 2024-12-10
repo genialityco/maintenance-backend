@@ -1,3 +1,4 @@
+import appointmentService from "../services/appointmentService.js";
 import clientService from "../services/clientService.js";
 import sendResponse from "../utils/sendResponse.js";
 
@@ -79,9 +80,20 @@ const clientController = {
   // Controlador para eliminar un cliente
   deleteClient: async (req, res) => {
     const { id } = req.params;
+
+    const clientHaveAppointments =
+      await appointmentService.getAppointmentsByClient(id);
+    if (clientHaveAppointments.length > 0) {
+      return sendResponse(
+        res,
+        400,
+        null,
+        "El cliente tiene citas, no se puede eliminar"
+      );
+    }
     try {
       const result = await clientService.deleteClient(id);
-      sendResponse(res, 200, null, result.message);
+      sendResponse(res, 200, null, clientHaveAppointments);
     } catch (error) {
       sendResponse(res, 404, null, error.message);
     }

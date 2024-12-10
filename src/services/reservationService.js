@@ -94,16 +94,17 @@ const reservationService = {
           names: reservation.customerDetails?.name || "Estimado cliente",
           date: appointmentDate,
           organization: reservation.organizationId?.name,
+          service: reservation.serviceId.name,
           phoneNumber: reservation.organizationId?.phoneNumber,
         };
   
         // Enviar confirmación por WhatsApp
         try {
-          await whatsappService.sendWhatsappStatusReservation(
-            updateData.status,
-            reservation.customerDetails?.phone,
-            reservationDetails
-          );
+          // await whatsappService.sendWhatsappStatusReservation(
+          //   updateData.status,
+          //   reservation.customerDetails?.phone,
+          //   reservationDetails
+          // );
         } catch (error) {
           console.error(
             `Error enviando la confirmación para ${reservation.customerDetails?.phone}:`,

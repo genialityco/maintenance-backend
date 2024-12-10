@@ -97,7 +97,11 @@ const appointmentService = {
       .exec();
   },
 
-  // Actualizar una cita
+  // Obtener las citas de un empleado
+  getAppointmentsByClient: async (client) => {
+    return await appointmentModel.find({ client });
+  },
+
   // Actualizar una cita
   updateAppointment: async (id, updatedData) => {
     const appointment = await appointmentModel.findById(id);
