@@ -3,11 +3,19 @@ import mongoose from "mongoose";
 const organizationSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
     required: true,
+  },
+  location: {
+    type: Object,
+    required: true,
+  },
+  address: {
+    type: String,
+    required: false,
   },
   password: {
     type: String,

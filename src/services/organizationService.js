@@ -7,6 +7,8 @@ const organizationService = {
     const {
       name,
       email,
+      location,
+      address,
       password,
       phoneNumber,
       role,
@@ -23,6 +25,8 @@ const organizationService = {
     const newOrganization = new Organization({
       name,
       email,
+      location,
+      address,
       password: hashedPassword,
       phoneNumber,
       role,
@@ -61,8 +65,16 @@ const organizationService = {
 
   // Actualizar una organización
   updateOrganization: async (id, organizationData) => {
-    const { name, email, password, phoneNumber, role, isActive } =
-      organizationData;
+    const {
+      name,
+      email,
+      location,
+      address,
+      password,
+      phoneNumber,
+      role,
+      isActive,
+    } = organizationData;
     const organization = await Organization.findById(id);
 
     if (!organization) {
@@ -71,6 +83,10 @@ const organizationService = {
 
     organization.name = name !== undefined ? name : organization.name;
     organization.email = email !== undefined ? email : organization.email;
+    organization.location =
+      location !== undefined ? location : organization.location;
+    organization.address =
+      address !== undefined ? address : organization.address;
     organization.phoneNumber =
       phoneNumber !== undefined ? phoneNumber : organization.phoneNumber;
     organization.role = role !== undefined ? role : organization.role;
