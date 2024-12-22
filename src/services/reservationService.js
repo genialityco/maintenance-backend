@@ -100,11 +100,11 @@ const reservationService = {
   
         // Enviar confirmación por WhatsApp
         try {
-          // await whatsappService.sendWhatsappStatusReservation(
-          //   updateData.status,
-          //   reservation.customerDetails?.phone,
-          //   reservationDetails
-          // );
+          await whatsappService.sendWhatsappStatusReservation(
+            updateData.status,
+            reservation.customerDetails?.phone,
+            reservationDetails
+          );
         } catch (error) {
           console.error(
             `Error enviando la confirmación para ${reservation.customerDetails?.phone}:`,
