@@ -34,7 +34,7 @@ const clientService = {
     phoneNumber,
     organizationId
   ) => {
-    const client = await Client.findOne({ phoneNumber, organizationId });
+    const client = await Client.findOne({ phoneNumber, organizationId }).populate("organizationId").exec();
     if (!client) {
       throw new Error("Cliente no encontrado");
     }

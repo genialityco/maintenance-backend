@@ -50,6 +50,32 @@ const organizationSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  referredCount: {
+    type: Number,
+    default: 0,
+  },
+  referredReward: { 
+    type: String,
+    required: false,
+  },
+  serviceCount: {
+    type: Number,
+    default: 0,
+  },
+  serviceReward: { 
+    type: String,
+    required: false,
+  },
+  openingHours: { 
+    start: {
+      type: String, 
+      required: true,
+    },
+    end: {
+      type: String, 
+      required: true,
+    },
+  },
 });
 
 export default mongoose.model("Organization", organizationSchema);
