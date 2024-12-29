@@ -1,4 +1,5 @@
 import appointmentModel from "../models/appointmentModel.js";
+import organizationService from "./organizationService.js";
 import whatsappService from "./sendWhatsappService.js";
 
 const appointmentService = {
@@ -37,6 +38,39 @@ const appointmentService = {
       endDate,
       organizationId,
     });
+
+    const dateObject = new Date(startDate);
+
+    const appointmentDate = dateObject.toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "long",
+    });
+    
+
+    const organization = await organizationService.getOrganizationById(
+      organizationId
+    );
+
+    const appointmentDetails = {
+      name: client?.name || "Estimado cliente",
+      date: appointmentDate,
+      organization: organization.name,
+      service: service.name,
+      phoneNumber: organization.phoneNumber,
+    };
+
+    // Enviar confirmación por WhatsApp
+    try {
+      await whatsappService.sendWhatsappScheduleAppointment(
+        client?.phoneNumber,
+        appointmentDetails
+      );
+    } catch (error) {
+      console.error(
+        `Error enviando la confirmación para ${client?.phone}:`,
+        error.message
+      );
+    }
 
     return await newAppointment.save();
   },
