@@ -51,6 +51,10 @@ const employeeModelSchema = new mongoose.Schema({
       "https://ik.imagekit.io/6cx9tc1kx/default_smile.png?updatedAt=1732716506174",
     required: false,
   },
+  color : {
+    type: String,
+    required: false
+  }
 });
 
 export default mongoose.model("Employee", employeeModelSchema);

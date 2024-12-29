@@ -89,6 +89,7 @@ const employeeService = {
       password,
       isActive,
       profileImage,
+      color,
     } = employeeData;
     const employee = await Employee.findById(id);
 
@@ -105,7 +106,9 @@ const employeeService = {
     employee.organizationId =
       organizationId !== undefined ? organizationId : employee.organizationId;
     employee.isActive = isActive !== undefined ? isActive : employee.isActive;
-    employee.profileImage = profileImage !== undefined ? profileImage : employee.profileImage;
+    employee.profileImage =
+      profileImage !== undefined ? profileImage : employee.profileImage;
+    employee.color = color !== undefined ? color : employee.color;
 
     // Encriptar la contraseña solo si se ha proporcionado una nueva
     if (password) {
