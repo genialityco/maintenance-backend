@@ -138,7 +138,7 @@ const reservationService = {
   },
 
   // Validar y crear cliente si no existe
-  ensureClientExists: async ({ name, phoneNumber, email, organizationId }) => {
+  ensureClientExists: async ({ name, phoneNumber, email, organizationId, birthDate }) => {
     // Buscar cliente existente por teléfono y organización
     const existingClient = await Client.findOne({
       phoneNumber,
@@ -159,6 +159,11 @@ const reservationService = {
         isUpdated = true;
       }
 
+      if(birthDate && existingClient.birthDate !== birthDate) {
+        existingClient.birthDate = birthDate;
+        isUpdated = true;
+      }
+
       // Guardar cambios si hubo actualizaciones
       if (isUpdated) {
         await existingClient.save();
@@ -168,7 +173,7 @@ const reservationService = {
     }
 
     // Crear un nuevo cliente si no existe
-    const newClient = new Client({ name, phoneNumber, email, organizationId });
+    const newClient = new Client({ name, phoneNumber, email, organizationId, birthDate });
     return await newClient.save();
   },
 };

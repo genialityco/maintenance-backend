@@ -21,6 +21,7 @@ const reservationController = {
         phoneNumber: customerDetails.phone,
         email: customerDetails.email,
         organizationId,
+        birthDate: customerDetails.birthDate
       });
 
       // Crear reserva

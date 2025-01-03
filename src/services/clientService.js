@@ -3,10 +3,10 @@ import Client from "../models/clientModel.js";
 const clientService = {
   // Crear un nuevo cliente
   createClient: async (clientData) => {
-    const { name, email, phoneNumber, organizationId } = clientData;
+    const { name, email, phoneNumber, organizationId, birthDate } = clientData;
 
     // Crear y guardar el nuevo cliente
-    const newClient = new Client({ name, email, phoneNumber, organizationId });
+    const newClient = new Client({ name, email, phoneNumber, organizationId, birthDate });
     return await newClient.save();
   },
 
@@ -43,7 +43,7 @@ const clientService = {
 
   // Actualizar un cliente
   updateClient: async (id, clientData) => {
-    const { name, email, phoneNumber, organizationId } = clientData;
+    const { name, email, phoneNumber, organizationId, birthDate } = clientData;
     const client = await Client.findById(id);
 
     if (!client) {
@@ -54,6 +54,7 @@ const clientService = {
     client.email = email || client.email;
     client.phoneNumber = phoneNumber || client.phoneNumber;
     client.organizationId = organizationId || client.organizationId;
+    client.birthDate = birthDate || client.birthDate;
 
     return await client.save();
   },
