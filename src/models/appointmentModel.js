@@ -39,6 +39,10 @@ const appointmentModelSchema = new mongoose.Schema({
     required: true,
   },
   reminderSent: { type: Boolean, default: false },
+  advancePayment: {
+    type: Number,
+    default: 0, 
+  },
 });
 
 export default mongoose.model("Appointment", appointmentModelSchema);

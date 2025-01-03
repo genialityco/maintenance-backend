@@ -13,6 +13,7 @@ const appointmentService = {
       startDate,
       endDate,
       organizationId,
+      advancePayment
     } = appointmentData;
 
     // Comprobar citas superpuestas
@@ -37,6 +38,7 @@ const appointmentService = {
       startDate,
       endDate,
       organizationId,
+      advancePayment
     });
 
     const dateObject = new Date(startDate);
