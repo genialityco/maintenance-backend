@@ -86,6 +86,35 @@ const subscriptionController = {
       );
     }
   },
+
+  // Eliminar una suscripción
+  deleteSubscription: async (req, res) => {
+    const { endpoint, userId } = req.body;
+    try {
+      const deletedSubscription = await subscriptionService.deleteSubscription(
+        endpoint,
+        userId
+      );
+
+      if (!deletedSubscription) {
+        return sendResponse(
+          res,
+          404,
+          null,
+          "No se encontró ninguna suscripción para eliminar."
+        );
+      }
+
+      sendResponse(
+        res,
+        200,
+        deletedSubscription,
+        "Suscripción eliminada con éxito"
+      );
+    } catch (error) {
+      sendResponse(res, 500, null, error.message);
+    }
+  },
 };
 
 export default subscriptionController;

@@ -18,4 +18,7 @@ router.post(
 // Ruta para enviar notificaciones a todos los usuarios
 router.post("/notify/all", subscriptionController.sendNotificationToAll);
 
+// Ruta para eliminar una supscripción
+router.delete("/subscribe", subscriptionController.deleteSubscription);
+
 export default router;

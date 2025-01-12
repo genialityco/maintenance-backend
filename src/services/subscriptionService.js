@@ -88,6 +88,19 @@ const subscriptionService = {
       await subscriptionService.sendNotification(subscription, payload);
     });
   },
+
+  deleteSubscription: async (endpoint, userId) => {
+    try {
+      const result = await Subscription.findOneAndDelete({ endpoint, userId });
+      if (!result) {
+        throw new Error("La suscripción no fue encontrada");
+      }
+      return result;
+    } catch (error) {
+      console.error("Error al eliminar la suscripción:", error);
+      throw new Error("No se pudo eliminar la suscripción");
+    }
+  },
 };
 
 export default subscriptionService;
