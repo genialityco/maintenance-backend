@@ -1,6 +1,7 @@
+import notificationService from "../services/notificationService.js";
 import organizationService from "../services/organizationService.js";
 import reservationService from "../services/reservationService.js";
-import subscriptionService from "../services/subscriptionService.js"
+import subscriptionService from "../services/subscriptionService.js";
 import sendResponse from "../utils/sendResponse.js";
 
 const reservationController = {
@@ -21,7 +22,7 @@ const reservationController = {
         phoneNumber: customerDetails.phone,
         email: customerDetails.email,
         organizationId,
-        birthDate: customerDetails.birthDate
+        birthDate: customerDetails.birthDate,
       });
 
       // Crear reserva
@@ -34,8 +35,25 @@ const reservationController = {
         organizationId,
       });
 
-      const adminOrganization = await organizationService.getOrganizationById(organizationId);
-      
+      const adminOrganization = await organizationService.getOrganizationById(
+        organizationId
+      );
+
+      // Crear la notificación
+      const notificationData = {
+        title: "Nueva reserva",
+        message: "Tienes una nueva reserva pendiente por confirmar",
+        organizationId: adminOrganization._id,
+        type: "reservation",
+        frontendRoute: `/gestionar-reservas-online`,
+        status: "unread",
+      };
+
+      // Guardar la notificación en la base de datos
+      await notificationService.createNotification(
+        notificationData
+      );
+
       const notify = {
         title: "Nueva reserva",
         message: "Tienes una nueva reserva pendiente por confirmar",
