@@ -52,6 +52,7 @@ const employeeService = {
     return await Employee.find({ organizationId })
       .select("-password")
       .populate("services")
+      .sort({ order: 1, _id: 1 }) // Ordenar primero por 'order' ascendente, luego por '_id' como respaldo
       .exec();
   },
 
@@ -90,6 +91,7 @@ const employeeService = {
       isActive,
       profileImage,
       color,
+      order,
     } = employeeData;
     const employee = await Employee.findById(id);
 
@@ -109,6 +111,7 @@ const employeeService = {
     employee.profileImage =
       profileImage !== undefined ? profileImage : employee.profileImage;
     employee.color = color !== undefined ? color : employee.color;
+    employee.order = order !== undefined ? order : employee.order;
 
     // Encriptar la contraseña solo si se ha proporcionado una nueva
     if (password) {

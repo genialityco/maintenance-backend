@@ -6,7 +6,13 @@ const clientService = {
     const { name, email, phoneNumber, organizationId, birthDate } = clientData;
 
     // Crear y guardar el nuevo cliente
-    const newClient = new Client({ name, email, phoneNumber, organizationId, birthDate });
+    const newClient = new Client({
+      name,
+      email,
+      phoneNumber,
+      organizationId,
+      birthDate,
+    });
     return await newClient.save();
   },
 
@@ -34,7 +40,9 @@ const clientService = {
     phoneNumber,
     organizationId
   ) => {
-    const client = await Client.findOne({ phoneNumber, organizationId }).populate("organizationId").exec();
+    const client = await Client.findOne({ phoneNumber, organizationId })
+      .populate("organizationId")
+      .exec();
     if (!client) {
       throw new Error("Cliente no encontrado");
     }
@@ -50,11 +58,16 @@ const clientService = {
       throw new Error("Cliente no encontrado");
     }
 
-    client.name = name || client.name;
-    client.email = email || client.email;
-    client.phoneNumber = phoneNumber || client.phoneNumber;
-    client.organizationId = organizationId || client.organizationId;
-    client.birthDate = birthDate || client.birthDate;
+    // Actualizar solo si los valores existen o son null explícitos
+    client.name = name !== undefined ? name : client.name;
+    client.email = email !== undefined ? email : client.email;
+    client.phoneNumber =
+      phoneNumber !== undefined ? phoneNumber : client.phoneNumber;
+    client.organizationId =
+      organizationId !== undefined ? organizationId : client.organizationId;
+
+    // Permitir que birthDate sea null
+    client.birthDate = birthDate !== undefined ? birthDate : client.birthDate;
 
     return await client.save();
   },
