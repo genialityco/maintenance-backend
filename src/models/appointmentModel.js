@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+const additionalItemSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+});
+
 const appointmentModelSchema = new mongoose.Schema(
   {
     service: {
@@ -43,6 +48,15 @@ const appointmentModelSchema = new mongoose.Schema(
     advancePayment: {
       type: Number,
       default: 0,
+    },
+    customPrice: {
+      type: Number, 
+      default: null,
+    },
+    additionalItems: [additionalItemSchema], 
+    totalPrice: {
+      type: Number,
+      required: true,
     },
   },
   {

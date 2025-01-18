@@ -1,5 +1,6 @@
 import appointmentModel from "../models/appointmentModel.js";
 import organizationService from "./organizationService.js";
+import serviceService from "./serviceService.js";
 import whatsappService from "./sendWhatsappService.js";
 
 const appointmentService = {
@@ -13,7 +14,9 @@ const appointmentService = {
       startDate,
       endDate,
       organizationId,
-      advancePayment
+      advancePayment,
+      customPrice, 
+      additionalItems = [],
     } = appointmentData;
 
     // Comprobar citas superpuestas
@@ -30,6 +33,27 @@ const appointmentService = {
       throw new Error("El empleado tiene citas que se cruzan");
     }
 
+    // Validar adicionales (opcional)
+    additionalItems.forEach((item) => {
+      if (!item.name || !item.price || item.price < 0 || item.quantity < 0) {
+        throw new Error("Adicionales inválidos en la cita");
+      }
+    });
+
+    // Obtener el servicio para el precio base
+    const serviceDetails = await serviceService.getServiceById(service);
+    if (!serviceDetails) {
+      throw new Error("Servicio no encontrado");
+    }
+
+    const basePrice = customPrice ?? serviceDetails.price; // Usar precio personalizado o el del servicio
+    const additionalCost = additionalItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    const totalPrice = basePrice + additionalCost; // Calcular precio total
+
+    // Crear la cita
     const newAppointment = new appointmentModel({
       service,
       employee,
@@ -38,17 +62,20 @@ const appointmentService = {
       startDate,
       endDate,
       organizationId,
-      advancePayment
+      advancePayment,
+      customPrice,
+      additionalItems,
+      totalPrice, // Asignar precio total calculado
     });
 
+    // Formatear fecha para la confirmación
     const dateObject = new Date(startDate);
-
     const appointmentDate = dateObject.toLocaleDateString("es-ES", {
       day: "numeric",
       month: "long",
     });
-    
 
+    // Obtener detalles de la organización
     const organization = await organizationService.getOrganizationById(
       organizationId
     );
@@ -57,23 +84,24 @@ const appointmentService = {
       name: client?.name || "Estimado cliente",
       date: appointmentDate,
       organization: organization.name,
-      service: service.name,
+      service: serviceDetails.name,
       phoneNumber: organization.phoneNumber,
     };
 
     // Enviar confirmación por WhatsApp
-    try {
-      await whatsappService.sendWhatsappScheduleAppointment(
-        client?.phoneNumber,
-        appointmentDetails
-      );
-    } catch (error) {
-      console.error(
-        `Error enviando la confirmación para ${client?.phone}:`,
-        error.message
-      );
-    }
+    // try {
+    //   await whatsappService.sendWhatsappScheduleAppointment(
+    //     client?.phoneNumber,
+    //     appointmentDetails
+    //   );
+    // } catch (error) {
+    //   console.error(
+    //     `Error enviando la confirmación para ${client?.phoneNumber}:`,
+    //     error.message
+    //   );
+    // }
 
+    // Guardar la cita en la base de datos
     return await newAppointment.save();
   },
 
