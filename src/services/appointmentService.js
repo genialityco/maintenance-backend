@@ -89,17 +89,17 @@ const appointmentService = {
     };
 
     // Enviar confirmación por WhatsApp
-    // try {
-    //   await whatsappService.sendWhatsappScheduleAppointment(
-    //     client?.phoneNumber,
-    //     appointmentDetails
-    //   );
-    // } catch (error) {
-    //   console.error(
-    //     `Error enviando la confirmación para ${client?.phoneNumber}:`,
-    //     error.message
-    //   );
-    // }
+    try {
+      await whatsappService.sendWhatsappScheduleAppointment(
+        client?.phoneNumber,
+        appointmentDetails
+      );
+    } catch (error) {
+      console.error(
+        `Error enviando la confirmación para ${client?.phoneNumber}:`,
+        error.message
+      );
+    }
 
     // Guardar la cita en la base de datos
     return await newAppointment.save();
