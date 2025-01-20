@@ -73,6 +73,8 @@ const appointmentService = {
     const appointmentDate = dateObject.toLocaleDateString("es-ES", {
       day: "numeric",
       month: "long",
+      hour: "2-digit",
+      minute: "2-digit"
     });
 
     // Obtener detalles de la organización
