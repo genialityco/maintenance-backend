@@ -70,12 +70,14 @@ const appointmentService = {
 
     // Formatear fecha para la confirmación
     const dateObject = new Date(startDate);
-    const appointmentDate = dateObject.toLocaleDateString("es-ES", {
+
+    const appointmentDate = new Intl.DateTimeFormat("es-ES", {
       day: "numeric",
       month: "long",
       hour: "2-digit",
-      minute: "2-digit"
-    });
+      minute: "2-digit",
+      timeZone: "America/Bogota",
+    }).format(dateObject);
 
     // Obtener detalles de la organización
     const organization = await organizationService.getOrganizationById(
