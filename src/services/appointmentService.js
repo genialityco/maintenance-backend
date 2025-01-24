@@ -15,7 +15,7 @@ const appointmentService = {
       endDate,
       organizationId,
       advancePayment,
-      customPrice, 
+      customPrice,
       additionalItems = [],
     } = appointmentData;
 
@@ -168,7 +168,11 @@ const appointmentService = {
 
   // Obtener las citas de un empleado
   getAppointmentsByClient: async (client) => {
-    return await appointmentModel.find({ client });
+    return await appointmentModel
+      .find({ client })
+      .populate("service")
+      .populate("employee")
+      .exec();
   },
 
   // Actualizar una cita

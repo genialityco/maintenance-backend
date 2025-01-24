@@ -29,4 +29,9 @@ router.get(
   appointmentController.getAppointmentsByEmployee
 );
 
+router.get(
+  "/appointments/client/:clientId",
+  appointmentController.getAppointmentsByClient
+);
+
 export default router;

@@ -34,28 +34,28 @@ const appointmentController = {
     }
   },
 
-// Controlador para obtener citas de una organización con rango de fechas opcional
-getAppointmentsByOrganizationWithDates: async (req, res) => {
-  const { organizationId } = req.params;
-  const { startDate, endDate } = req.query; // Fechas enviadas como query params
+  // Controlador para obtener citas de una organización con rango de fechas opcional
+  getAppointmentsByOrganizationWithDates: async (req, res) => {
+    const { organizationId } = req.params;
+    const { startDate, endDate } = req.query; // Fechas enviadas como query params
 
-  try {
-    const appointments = await appointmentService.getAppointmentsByOrganizationWithDates(
-      organizationId,
-      startDate,
-      endDate
-    );
-    sendResponse(
-      res,
-      200,
-      appointments,
-      "Citas de la organización obtenidas exitosamente"
-    );
-  } catch (error) {
-    sendResponse(res, 500, null, error.message);
-  }
-},
-
+    try {
+      const appointments =
+        await appointmentService.getAppointmentsByOrganizationWithDates(
+          organizationId,
+          startDate,
+          endDate
+        );
+      sendResponse(
+        res,
+        200,
+        appointments,
+        "Citas de la organización obtenidas exitosamente"
+      );
+    } catch (error) {
+      sendResponse(res, 500, null, error.message);
+    }
+  },
 
   // Controlador para obtener una cita por ID
   getAppointmentById: async (req, res) => {
@@ -80,6 +80,24 @@ getAppointmentsByOrganizationWithDates: async (req, res) => {
         200,
         appointments,
         "Citas del empleado obtenidas exitosamente"
+      );
+    } catch (error) {
+      sendResponse(res, 500, null, error.message);
+    }
+  },
+
+  // Controlador para obtener citas por cliente
+  getAppointmentsByClient: async (req, res) => {
+    const { clientId } = req.params;
+    try {
+      const appointments = await appointmentService.getAppointmentsByClient(
+        clientId
+      );
+      sendResponse(
+        res,
+        200,
+        appointments,
+        "Citas del cliente obtenidas exitosamente"
       );
     } catch (error) {
       sendResponse(res, 500, null, error.message);
