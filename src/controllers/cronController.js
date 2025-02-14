@@ -1,10 +1,9 @@
-import appointmentService from "../services/appointmentService";
 
 const cronController = {
   runDailyReminder: async (req, res) => {
     try {
       // Llama al servicio de recordatorios
-      await appointmentService.sendDailyReminders();
+      // await appointmentService.sendDailyReminders();
       res.status(200).json({ message: "Recordatorios enviados correctamente" });
     } catch (error) {
       console.error("Error al ejecutar el recordatorio:", error);
